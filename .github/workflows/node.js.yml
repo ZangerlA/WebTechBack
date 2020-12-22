@@ -23,4 +23,4 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
-    - run: npm start & npx wait-on http://localhost:3000
+    - run: pm2 restart bin/www
