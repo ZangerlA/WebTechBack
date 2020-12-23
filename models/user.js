@@ -27,6 +27,14 @@ const user = (sequelize, DataTypes) => {
                 notEmpty: true,
             },
         },
+        pwHash: {
+           type: DataTypes.String,
+            unique: false,
+            allowNull: false,
+            validate: {
+                notEmpty: true,
+            },
+        },
     });
 
     User.associate = models => {
