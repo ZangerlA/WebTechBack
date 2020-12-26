@@ -1,6 +1,6 @@
 var env = require('dotenv').config()
 
-const { DB_HOST, DB_USERNAME, DB_PASSWORD } = process.env;
+const { PORT, DB_HOST, DB_USERNAME, DB_PASSWORD } = process.env;
 
 module.exports = {
     "development": {
@@ -8,8 +8,7 @@ module.exports = {
         "password": DB_PASSWORD,
         "database": "TeamkillLocalDB_dev",
         "host": DB_HOST,
-        "dialect": "postgres"
-
+        "dialect": "postgres",
     },
     "test": {
         "username": DB_USERNAME,
