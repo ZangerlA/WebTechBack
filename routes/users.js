@@ -1,21 +1,59 @@
 var express = require('express');
 var router = express.Router();
-var bcrypt = require('bcrypt')
+var bcrypt = require('bcrypt');
 const db = require('../models');
+var userExists = require('../middlewares/userExists');
+var env = require('dotenv').config();
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-    res.send('respond with a hello world');
+//Route for retrieving data of user. Check username and pw, then return token, userinfo
+router.get('/:id', async function(req, res, next) {
+    let user = await db.User.findByPk(req.params.id);
+    delete user.dataValues.pwHash;
+    res.status(200).send(user);
 });
 
-router.post('/', function (req, res, next) {
-    console.log(req.body)
-    db.User.create({
-        username: req.body.client_username,
-        contact_email: req.body.client_email,
-        pwHash: req.body.client_password
+//Route for user creation.
+router.post('/', userExists, async function (req, res, next) {
+    let hash = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(12));
+
+    if (req.body.secret_code !== process.env.SECRET_CODE) { // Only let TMKL users create an account
+        res.status(400).send({message: "Gotta do some TMKLs first."});
+        return;
+    }
+
+    await db.User.create({
+        username: req.body.username,
+        contact_email: req.body.contact_email,
+        pwHash: hash
     });
-    res.send("User created!")
+    res.status(200).send({message: "User created!"});
+})
+
+//Route for making changes to userdata
+router.put('/:id',userExists, async function (req,res,next) {
+    let fieldName = req.body.fieldName; //Set to the fieldname from db you want to change
+    let newInfo = req.body.newInfo;     //Set to the new value for the given db-field
+    if(fieldName === "pwHash") {
+        newInfo = bcrypt.hashSync(req.body.newInfo, bcrypt.genSaltSync(12));
+    }
+    await db.User.update({
+        [fieldName]: newInfo    //Set db-field [fieldvalue] to content of newInfo
+    },
+        { where: {
+            id: req.params.id
+        }
+    }).catch(error => res.status(500).send({message: error.message}));
+    res.status(200).send({message: "Userdata edited"});
+})
+
+//Route for deleting a user
+router.delete('/:id',async function (req,res,next) {
+    await db.User.destroy({
+        where: {
+            id: req.params.id
+        }
+    })
+    res.status(200).send({message: "User deleted"});
 })
 
 module.exports = router;
