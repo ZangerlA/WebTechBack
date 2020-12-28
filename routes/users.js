@@ -3,7 +3,8 @@ var router = express.Router();
 var bcrypt = require('bcrypt');
 const db = require('../models');
 var userExists = require('../middlewares/userExists');
-var env = require('dotenv').config();
+var jwt = require('jsonwebtoken');
+
 
 //Route for retrieving data of user. Check username and pw, then return token, userinfo
 router.get('/:id', async function(req, res, next) {
@@ -54,6 +55,36 @@ router.delete('/:id',async function (req,res,next) {
         }
     })
     res.status(200).send({message: "User deleted"});
+})
+
+router.post('/login', async function (req,res) {
+    let username = req.body.username;
+    let pw = req.body.password;
+    let user = await db.User.findOne({where: {username: username}})
+    if(user === null) {
+        res.status(403).send({ message: "An account with this username does not exist" });
+        return;
+    }
+    else if(!bcrypt.compareSync(pw,user.dataValues.pwHash)){
+        res.status(403).send({ message: "Wrong Password." });
+        return;
+    }
+    else {
+        let token = jwt.sign(
+            {
+                id: user.dataValues.id
+            },
+            process.env.TOKEN_SECRET,
+            {
+                expiresIn: '3600s',
+                audience: 'http://teamkill.at/api'
+            });
+
+        res.status(200).send({
+            id: user.dataValues.id,
+            accessToken: token
+        });
+    }
 })
 
 module.exports = router;

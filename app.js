@@ -5,6 +5,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var jwt_auth = require('express-jwt');
+var env = require('dotenv').config();
 
 var app = express();
 
@@ -18,6 +20,16 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(jwt_auth({
+  secret: process.env.TOKEN_SECRET,
+  algorithms: ['HS256'],
+  audience: 'http://teamkill.at/api'
+}).unless({
+  path: [
+    { url: /^\/users/, methods: ['POST'] },
+    { url: /^\/users\/login/, methods: ['POST'] }
+  ]
+}));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
