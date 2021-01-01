@@ -16,7 +16,7 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-app.use(cors({credentials: true, origin: 'http://localhost:4200'}))
+app.use(cors({credentials: true, origin: process.env.HTTPS_ORIGIN}))
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
