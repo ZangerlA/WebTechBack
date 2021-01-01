@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var authRouter = require('./routes/auth');
 var jwt_auth = require('express-jwt');
 var env = require('dotenv').config();
 var cors = require('cors')
@@ -35,8 +36,10 @@ app.use(jwt_auth({
     { url: /^\/users\/login/, methods: ['POST'] }
   ]
 }));
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/auth', authRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -76,11 +76,16 @@ router.post('/login', async function (req,res) {
             },
             process.env.TOKEN_SECRET,
             {
-                expiresIn: '3600s',
+                expiresIn: '600s',
                 audience: 'http://teamkill.at/api'
             });
-
-        res.status(200).cookie('token', token, {httpOnly:true, secure:false}).send({
+        let httpOnly = (process.env.HTTPONLY === 'true'? true:false)
+        let secure = (process.env.SECURE === 'true'? true:false)
+        res.status(200).cookie(
+            'token',
+            token,
+            {httpOnly:httpOnly, secure: secure})
+            .send({
             id: user.dataValues.id
         })
     }
