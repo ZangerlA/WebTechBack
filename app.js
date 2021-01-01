@@ -7,6 +7,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var jwt_auth = require('express-jwt');
 var env = require('dotenv').config();
+var cors = require('cors')
 
 var app = express();
 
@@ -14,6 +15,7 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+app.use(cors({credentials: true, origin: 'http://localhost:4200'}))
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -23,7 +25,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(jwt_auth({
   secret: process.env.TOKEN_SECRET,
   algorithms: ['HS256'],
-  audience: 'http://teamkill.at/api'
+  audience: 'http://teamkill.at/api',
+  credentialsRequired: true,
+  getToken: req => req.cookies.token
+
 }).unless({
   path: [
     { url: /^\/users/, methods: ['POST'] },

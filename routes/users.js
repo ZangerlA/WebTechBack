@@ -80,10 +80,9 @@ router.post('/login', async function (req,res) {
                 audience: 'http://teamkill.at/api'
             });
 
-        res.status(200).send({
-            id: user.dataValues.id,
-            accessToken: token
-        });
+        res.status(200).cookie('token', token, {httpOnly:true, secure:false}).send({
+            id: user.dataValues.id
+        })
     }
 })
 
