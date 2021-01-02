@@ -8,6 +8,7 @@ router.post('/login', async function (req, res, next) {
     let username = req.body.username;
     let pw = req.body.password;
     let user = await db.User.findOne({where: {username: username}})
+
     if(user === null) {
         res.status(403).send({ message: "An account with this username does not exist" });
         return;
@@ -98,7 +99,7 @@ router.get('/logout', function (req, res, next) {
 });
 
 router.get('/validateSession', function (req, res, next) {
-    res.status(200).send();
+    res.status(200).send({ message: "logged in"});
 })
 
 module.exports = router;

@@ -17,8 +17,8 @@ function checkAuth(req, res, next) {
                 res.status("400").send({message: "refresh_token_invalid"});
                 return;
             }
+            let user = await db.User.findByPk(decoded.id);
             if (refreshToken === user.dataValues.refreshToken && decoded.id === user.dataValues.id) {
-                let user = await db.User.findByPk(decoded.id);
                 let access_token = jwt.sign(
                     {
                         id: user.dataValues.id

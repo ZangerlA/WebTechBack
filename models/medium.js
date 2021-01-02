@@ -1,4 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
+const models = require('../models')
 
 
 'use strict';
@@ -15,8 +16,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Medium.hasMany()
-      Rewievs.belongsTo(Medium)
+      //Medium.hasMany(models.reviews)
+      //Rewievs.belongsTo(Medium)
 
     }
   };
