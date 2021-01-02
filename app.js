@@ -9,6 +9,7 @@ var authRouter = require('./routes/auth');
 var jwt_auth = require('express-jwt');
 var env = require('dotenv').config();
 var cors = require('cors')
+var checkAuth = require('./middlewares/checkAuth');
 
 var app = express();
 
@@ -24,18 +25,24 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(jwt_auth({
-  secret: process.env.TOKEN_SECRET,
+  secret: process.env.TOKEN_SECRET_ACCESS,
   algorithms: ['HS256'],
   audience: 'http://teamkill.at/api',
   credentialsRequired: true,
-  getToken: req => req.cookies.token
+  getToken: req => req.cookies.access_token
 
 }).unless({
   path: [
     { url: /^\/users/, methods: ['POST'] },
-    { url: /^\/users\/login/, methods: ['POST'] }
+    { url: /^\/auth\/login/, methods: ['POST'] }
   ]
 }));
+app.use(function (err, req, res, next) {
+  if (err.name === 'UnauthorizedError') {
+    console.log(err.name)
+    checkAuth(req,res,next)
+  }
+});
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
