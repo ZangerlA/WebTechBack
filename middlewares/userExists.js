@@ -4,7 +4,7 @@ function userExists(req, res, next) {
     if(req.body.fieldName === "username") {
         req.body.username = req.body.newInfo;
     }
-    if(req.body.fieldName && req.body.fieldName !== "username") {
+    if(req.body.fieldName && (req.body.fieldName !== "username")) {
         next();
         return;
     }
@@ -17,8 +17,9 @@ function userExists(req, res, next) {
             }
             else {
                 res.status(400).send({ message: "Username already taken." });
+                return;
             }
-        })
+        });
 }
 
 module.exports = userExists;

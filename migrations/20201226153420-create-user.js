@@ -16,6 +16,11 @@ module.exports = {
       pwHash: {
         type: Sequelize.STRING
       },
+      refreshToken: {
+        unique: true,
+        allowNull: true,
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

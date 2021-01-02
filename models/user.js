@@ -40,6 +40,11 @@ module.exports = (sequelize, DataTypes) => {
         notEmpty: true,
       },
     },
+    refreshToken: {
+      type: DataTypes.STRING,
+      unique: true,
+      allowNull: true,
+    }
   }, {
     sequelize,
     modelName: 'User',

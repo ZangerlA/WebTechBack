@@ -10,6 +10,7 @@ var jwt = require('jsonwebtoken');
 router.get('/:id', async function(req, res, next) {
     let user = await db.User.findByPk(req.params.id);
     delete user.dataValues.pwHash;
+    delete user.dataValues.refreshToken;
     res.status(200).send(user);
 });
 
@@ -55,40 +56,6 @@ router.delete('/:id',async function (req,res,next) {
         }
     })
     res.status(200).send({message: "User deleted"});
-})
-
-router.post('/login', async function (req,res) {
-    let username = req.body.username;
-    let pw = req.body.password;
-    let user = await db.User.findOne({where: {username: username}})
-    if(user === null) {
-        res.status(403).send({ message: "An account with this username does not exist" });
-        return;
-    }
-    else if(!bcrypt.compareSync(pw,user.dataValues.pwHash)){
-        res.status(403).send({ message: "Wrong Password." });
-        return;
-    }
-    else {
-        let token = jwt.sign(
-            {
-                id: user.dataValues.id
-            },
-            process.env.TOKEN_SECRET,
-            {
-                expiresIn: '600s',
-                audience: 'http://teamkill.at/api'
-            });
-        let httpOnly = (process.env.HTTPONLY === 'true'? true:false)
-        let secure = (process.env.SECURE === 'true'? true:false)
-        res.status(200).cookie(
-            'token',
-            token,
-            {httpOnly:httpOnly, secure: secure})
-            .send({
-            id: user.dataValues.id
-        })
-    }
 })
 
 module.exports = router;
