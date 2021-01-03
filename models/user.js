@@ -6,23 +6,18 @@ const {
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
-     /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
+
     static associate(models) {
       this.hasMany(models.Review, {
         foreignKey: {
           type: DataTypes.UUID
         }
       });
-       models.Review.belongsTo(this)
+      models.Review.belongsTo(this)
 
-      //this.drop()
-      //this.sync().catch(error => console.log(error));
     }
   };
+
   User.init({
     username: {
       type: DataTypes.STRING,

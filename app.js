@@ -6,6 +6,8 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var authRouter = require('./routes/auth');
+var mediaRouter = require('./routes/media');
+var reviewRouter = require('./routes/review');
 var jwt_auth = require('express-jwt');
 var env = require('dotenv').config();
 var cors = require('cors')
@@ -47,6 +49,8 @@ app.use(function (err, req, res, next) {
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/auth', authRouter);
+app.use('/media', mediaRouter);
+app.use('/review', reviewRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

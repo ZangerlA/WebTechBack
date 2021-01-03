@@ -7,11 +7,6 @@ const {
 module.exports = (sequelize, DataTypes) => {
   class Medium extends Model {
 
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
       this.hasMany(models.Review, {
         foreignKey: {
@@ -19,11 +14,9 @@ module.exports = (sequelize, DataTypes) => {
         }
       })
       models.Review.belongsTo(this)
-
-      //this.drop()
-      //this.sync().catch(error => console.log(error))
     }
   };
+
   Medium.init({
     title: {
       type: DataTypes.STRING,
