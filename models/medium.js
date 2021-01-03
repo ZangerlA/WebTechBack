@@ -1,6 +1,4 @@
 const { v4: uuidv4 } = require('uuid');
-const models = require('../models')
-
 
 'use strict';
 const {
@@ -15,23 +13,12 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
-      //Medium.hasMany(models.reviews)
-      //Rewievs.belongsTo(Medium)
-
+      this.hasMany(models.Review)
+      this.sync()
     }
   };
   Medium.init({
     title: {
-      type: DataTypes.STRING,
-      unique: true,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      }
-    },
-
-    type: {
       type: DataTypes.STRING,
       unique: false,
       allowNull: false,
@@ -40,8 +27,17 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
 
+    mediaType: {
+      type: DataTypes.ENUM('Movie', 'Anime', 'Series', 'Game'),
+      unique: false,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      }
+    },
+
     description: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       unique: false,
       allowNull: false,
       validate: {
@@ -59,10 +55,9 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'Medium',
   });
 
-
-
   Medium.beforeCreate((medium, _ ) => {
     return medium.id = uuidv4();
   })
+
   return Medium;
 };

@@ -4,20 +4,36 @@ module.exports = {
     await queryInterface.createTable('Media', {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.UUID
       },
       title: {
+        unique: false,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+        },
         type: Sequelize.STRING
       },
-      type: {
-        type: Sequelize.STRING
+      mediaType: {
+        unique: false,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+        },
+        type: Sequelize.ENUM("Movie", "Anime", "Series", "Game")
       },
       description: {
-        type: Sequelize.STRING
+        unique: false,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+        },
+        type: Sequelize.TEXT
       },
       imageUrl: {
+        unique: false,
+        allowNull: true,
         type: Sequelize.STRING
       },
       createdAt: {

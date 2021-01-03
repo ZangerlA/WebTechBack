@@ -1,40 +1,46 @@
+const { v4: uuidv4 } = require('uuid');
+
 'use strict';
-
-
 const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Rewievs extends Model {
+  class Review extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      this.belongsTo(models.Medium)
+      this.belongsTo(models.User)
+      this.sync();
     }
   };
-  Rewievs.init({
-    rewievText:{
-      type: DataTypes.STRING,
-      unique: true,
+  Review.init({
+    reviewText: {
+      type: DataTypes.TEXT,
+      unique: false,
       allowNull: false,
       validate: {
         notEmpty: true,
       }
     },
-    rewievPoints: {
+    reviewPoints: {
       type: DataTypes.DOUBLE,
-      unique: true,
+      unique: false,
       allowNull: false,
       validate: {
         notEmpty: true,
       }
-    },
+    }
   }, {
     sequelize,
-    modelName: 'rewievs',
+    modelName: 'Review',
   });
-  return Rewievs;
+  Review.beforeCreate((review, _ ) => {
+    return review.id = uuidv4();
+  })
+
+  return Review;
 };
