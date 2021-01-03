@@ -12,9 +12,10 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      this.belongsTo(models.Medium)
-      this.belongsTo(models.User)
-      this.sync();
+
+
+      //this.drop()
+      //this.sync().catch(error => console.log(error));
     }
   };
   Review.init({

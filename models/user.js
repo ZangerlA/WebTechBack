@@ -12,8 +12,15 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      this.hasMany(models.Review);
-      this.sync();
+      this.hasMany(models.Review, {
+        foreignKey: {
+          type: DataTypes.UUID
+        }
+      });
+       models.Review.belongsTo(this)
+
+      //this.drop()
+      //this.sync().catch(error => console.log(error));
     }
   };
   User.init({
