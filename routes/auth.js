@@ -1,13 +1,22 @@
-var express = require('express');
-var router = express.Router();
-var jwt = require('jsonwebtoken');
+const express = require('express');
+const router = express.Router();
 const db = require('../models');
-var bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt');
+const createAccessJwtCookie = require('../middlewares/createAccessJwtCookie')
+const createRefreshJwtCookie = require('../middlewares/createRefreshJwtCookie')
+const createUserIdCookie = require('../middlewares/createUserIdCookie')
 
 router.post('/login', async function (req, res, next) {
     let username = req.body.username;
     let pw = req.body.password;
-    let user = await db.User.findOne({where: {username: username}})
+    let user;
+
+    try {
+        user = await db.User.findOne({where: {username: username}})
+    }catch (error) {
+        res.status(500).send({error: error.message, message: 'Error finding User while logging in.'});
+        return;
+    }
 
     if(user === null) {
         res.status(403).send({ message: "An account with this username does not exist" });
@@ -18,63 +27,29 @@ router.post('/login', async function (req, res, next) {
         return;
     }
     else {
-        let access_token = jwt.sign(
-            {
-                id: user.dataValues.id
-            },
-            process.env.TOKEN_SECRET_ACCESS,
-            {
-                expiresIn: '600s',
-                audience: 'http://teamkill.at/api'
-            });
-        let refresh_token = jwt.sign(
-            {
-                id: user.dataValues.id
-            },
-            process.env.TOKEN_SECRET_REFRESH,
-            {
-                expiresIn: '2592000s',
-                audience: 'http://teamkill.at/api'
-            });
-        await db.User.update({
-                refreshToken: refresh_token    //Set db-field [fieldvalue] to content of newInfo
-            },
-            { where: {
-                    id: user.dataValues.id
-                }
-            }).catch(error => res.status(500).send({message: error.message}));
-
-        let httpOnly = (process.env.HTTPONLY === 'true'? true:false)
-        let secure = (process.env.SECURE === 'true'? true:false)
-        res.cookie(
-            'access_token',
-            access_token,
-            {
-                maxAge: 600000,
-                httpOnly:httpOnly,
-                secure: secure
-            });
-
-        res.cookie(
-            'refresh_token',
-            refresh_token,
-            {
-                maxAge: 2592000000,
-                httpOnly:httpOnly,
-                secure: secure
-            });
-
-        res.status(200).send({
-            id: user.dataValues.id
-        });
+        res = await createAccessJwtCookie(res, user.dataValues.id);
+        res = await createRefreshJwtCookie(res, user.dataValues.id);
+        res = await createUserIdCookie(res, user.dataValues.id);
+        res.status(200).send({ id: user.dataValues.id });
     }
 })
 
-router.get('/logout', function (req, res, next) {
-    const cookie = req.cookies.access_token
+router.get('/logout', async function (req, res, next) {
     const now = Date.now()/1000
     let httpOnly = (process.env.HTTPONLY === 'true'? true:false)
     let secure = (process.env.SECURE === 'true'? true:false)
+
+    try {
+        await db.User.update({ refreshToken: '' }, {
+                where: {
+                    id: req.cookies.id
+                }
+        });
+    }catch (error) {
+        res.status(500).send({error: error.message, message: 'Error deleting token while logging out.'});
+        return;
+    }
+
     res.cookie(
         'access_token',
         'invalid',
@@ -86,20 +61,18 @@ router.get('/logout', function (req, res, next) {
 
     res.cookie(
         'refresh_token',
-        refresh_token,
+        'invalid',
         {
             expires: now,
             httpOnly:httpOnly,
             secure: secure
         });
 
-    res.status(200).send({
-        message: "Successfully logged out"
-    });
+    res.status(200).send({ message: "Successfully logged out" });
 });
 
 router.get('/validateSession', function (req, res, next) {
-    res.status(200).send({ message: "logged in"});
+    res.status(200).send({ message: "logged in" });
 })
 
 module.exports = router;
