@@ -11,6 +11,7 @@ async function createRefreshJwtCookie(res, id) {
             expiresIn: '2592000s',
             audience: 'http://teamkill.at/api'
         });
+    console.log(refresh_token)
 
     try{
         await db.User.update({
@@ -22,6 +23,7 @@ async function createRefreshJwtCookie(res, id) {
             })
     }catch (error) {
         res.status(500).send({error: error.message, message: 'Error setting your refreshToken'});
+        return;
     }
 
     let httpOnly = (process.env.COOKIE_HTTPONLY === 'true'? true:false)

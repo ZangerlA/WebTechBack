@@ -7,7 +7,7 @@ const checkUserId = require('../middlewares/checkUserId');
 
 //Route for retrieving data of user. Check username and pw, then return token, userinfo
 router.get('/:id', async function(req, res, next) {
-    checkUserId(req, res, req.params.id)
+    checkUserId(res, req, req.params.id)
     let user
 
     try {

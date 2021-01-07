@@ -2,7 +2,7 @@ const db = require('../models');
 
 async function checkUserId(res, req, id) {
     let user;
-    const cookieId = req.cookies.id
+    const cookieId = req.cookies.u_id;
 
     try{
         user = await db.User.findByPk(cookieId);

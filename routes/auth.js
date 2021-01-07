@@ -35,17 +35,17 @@ router.post('/login', async function (req, res, next) {
 })
 
 router.get('/logout', async function (req, res, next) {
-    const now = Date.now()/1000
     let httpOnly = (process.env.HTTPONLY === 'true'? true:false)
     let secure = (process.env.SECURE === 'true'? true:false)
 
     try {
         await db.User.update({ refreshToken: '' }, {
                 where: {
-                    id: req.cookies.id
+                    id: req.cookies.u_id
                 }
         });
     }catch (error) {
+        console.log(error)
         res.status(500).send({error: error.message, message: 'Error deleting token while logging out.'});
         return;
     }
@@ -54,7 +54,7 @@ router.get('/logout', async function (req, res, next) {
         'access_token',
         'invalid',
         {
-            expires: now,
+            maxAge: 0,
             httpOnly:httpOnly,
             secure:secure
         });
@@ -63,7 +63,16 @@ router.get('/logout', async function (req, res, next) {
         'refresh_token',
         'invalid',
         {
-            expires: now,
+            maxAge: 0,
+            httpOnly:httpOnly,
+            secure: secure
+        });
+
+    res.cookie(
+        'u_id',
+        'invalid',
+        {
+            maxAge: 0,
             httpOnly:httpOnly,
             secure: secure
         });
