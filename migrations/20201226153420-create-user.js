@@ -36,6 +36,16 @@ module.exports = {
         allowNull: true,
         type: Sequelize.STRING
       },
+      userDescription: {
+        unique: false,
+        allowNull: true,
+        type: Sequelize.TEXT,
+      },
+      profileImgUrl: {
+        unique: false,
+        allowNull: true,
+        type: Sequelize.STRING,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
