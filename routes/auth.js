@@ -39,7 +39,7 @@ router.get('/logout', async function (req, res, next) {
     let secure = (process.env.SECURE === 'true'? true:false)
 
     try {
-        await db.User.update({ refreshToken: "logged out" }, {
+        await db.User.update({ refreshToken: null }, {
                 where: {
                     id: req.cookies.u_id
                 }
