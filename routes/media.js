@@ -13,11 +13,12 @@ router.get('/:id', async function (req, res, next) {
 })
 
 router.post('/', async function (req, res, next) {
+    console.log(req)
     await db.Medium.create({
         title: req.body.title,
-        mediaType: req.body.mediaType,
+        mediaType: req.body.type,
         description: req.body.description,
-        imageUrl: req.body.imageUrl
+        imageUrl: req.body.imgUrl
     });
     res.status(200).send({message: 'Medium created.'});
 })
