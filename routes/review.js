@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const db = require('../models');
+const setNewMediaScore = require("../middlewares/setNewMediaScore");
 
 router.get('/', async function (req, res, next) {
     const reviews = await db.Review.findAll();
@@ -17,10 +18,11 @@ router.post('/', async function (req, res, next) {
         reviewText: req.body.reviewText,
         reviewPoints: req.body.reviewPoints,
         MediumId: req.body.MediumId,
-        UserId: req.body.UserId
+        UserId: req.cookies.u_id
     });
     res.status(200).send({message: 'Review created.'});
-})
+    next();
+}, setNewMediaScore)
 
 router.put('/:id', async function (req, res, next) {
     let fieldName = req.body.fieldName; //Set to the fieldname from db you want to change
