@@ -49,6 +49,12 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       unique: false,
       allowNull: true,
+    },
+
+    mediaScore:{
+      type: DataTypes.DOUBLE,
+      unique: false,
+      allowNull: true
     }
   },{
     sequelize,
