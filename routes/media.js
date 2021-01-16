@@ -29,15 +29,16 @@ router.post('/', async function (req, res, next) {
 	try {
 		await db.Medium.create({
 			title: req.body.title,
-			mediaType: req.body.type,
+			mediaType: req.body.mediaType,
 			description: req.body.description,
-			imageUrl: req.body.imgUrl,
+			imageUrl: req.body.imageUrl,
 			mediaScore: req.body.mediaScore
 		});
+		res.status(200).send({message: 'Medium created.'});
 	} catch (error) {
 		res.status(500).send({error: error, message: 'Error creating new media'});
 	}
-	res.status(200).send({message: 'Medium created.'});
+
 })
 
 router.put('/:id', async function (req, res, next) {

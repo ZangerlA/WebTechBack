@@ -13,9 +13,6 @@ function createAccessJwtCookie(res, id) {
 	let httpOnly = (process.env.COOKIE_HTTPONLY === 'true' ? true : false)
 	let secure = (process.env.COOKIE_SECURE === 'true' ? true : false)
 
-	console.log(httpOnly)
-	console.log(secure)
-
 	res.cookie(
 		'access_token',
 		access_token,
