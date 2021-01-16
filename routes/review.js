@@ -4,8 +4,17 @@ const db = require('../models');
 const setNewMediaScore = require("../middlewares/setNewMediaScore");
 const addMediaToWatched = require("../middlewares/addMediaToWatched");
 
-router.get('/', async function (req, res, next) {
-	const reviews = await db.Review.findAll();
+router.get('/:mediumId?', async function (req, res, next) {
+	let reviews;
+	try {
+		if (req.query.mediumId) {
+			reviews = await db.Review.findAll({where: {MediumId: req.query.mediumId}})
+		} else {
+			reviews = await db.Review.findAll();
+		}
+	} catch (error) {
+		res.status(500).send({error: error, message: 'Error retrieving bulk media.'});
+	}
 	res.status(200).send(reviews);
 })
 
