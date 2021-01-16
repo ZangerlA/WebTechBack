@@ -1,18 +1,17 @@
-
 function createUserIdCookie(res, id) {
-    let httpOnly = (process.env.HTTPONLY === 'true'? true:false)
-    let secure = (process.env.SECURE === 'true'? true:false)
+	let httpOnly = (process.env.HTTPONLY === 'true' ? true : false)
+	let secure = (process.env.SECURE === 'true' ? true : false)
 
-    res.cookie(
-        'u_id',
-        id,
-        {
-            maxAge: 2592000000,
-            httpOnly: httpOnly,
-            secure: secure
-        });
+	res.cookie(
+		'u_id',
+		id,
+		{
+			maxAge: 2592000000,
+			httpOnly: httpOnly,
+			secure: secure
+		});
 
-    return res;
+	return res;
 }
 
 module.exports = createUserIdCookie;

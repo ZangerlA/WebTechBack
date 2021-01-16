@@ -1,28 +1,26 @@
-const {v4: uuidv4} = require('uuid');
-
 'use strict';
 const {
 	Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-	class Review extends Model {
+	class userMediaWatched extends Model {
 
 		static associate(models) {
-
 		}
 	};
-
-	Review.init({
-		reviewText: {
-			type: DataTypes.TEXT,
+	userMediaWatched.init({
+		userId: {
+			primaryKey: true,
+			type: DataTypes.UUID,
 			unique: false,
 			allowNull: false,
 			validate: {
 				notEmpty: true,
 			}
 		},
-		reviewPoints: {
-			type: DataTypes.DOUBLE,
+		mediumId: {
+			primaryKey: true,
+			type: DataTypes.UUID,
 			unique: false,
 			allowNull: false,
 			validate: {
@@ -31,11 +29,7 @@ module.exports = (sequelize, DataTypes) => {
 		}
 	}, {
 		sequelize,
-		modelName: 'Review',
+		modelName: 'userMediaWatched',
 	});
-	Review.beforeCreate((review, _) => {
-		return review.id = uuidv4();
-	})
-
-	return Review;
+	return userMediaWatched;
 };

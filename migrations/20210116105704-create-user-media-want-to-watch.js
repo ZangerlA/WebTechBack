@@ -1,27 +1,24 @@
 'use strict';
 module.exports = {
 	up: async (queryInterface, Sequelize) => {
-		await queryInterface.createTable('Reviews', {
-			id: {
-				allowNull: false,
+		await queryInterface.createTable('UserMediaWantToWatches', {
+			userId: {
 				primaryKey: true,
-				type: Sequelize.UUID
-			},
-			reviewText: {
+				type: Sequelize.UUID,
 				unique: false,
 				allowNull: false,
 				validate: {
 					notEmpty: true,
-				},
-				type: Sequelize.TEXT
+				}
 			},
-			reviewPoints: {
+			mediumId: {
+				primaryKey: true,
+				type: Sequelize.UUID,
 				unique: false,
 				allowNull: false,
 				validate: {
 					notEmpty: true,
-				},
-				type: Sequelize.DOUBLE,
+				}
 			},
 			createdAt: {
 				allowNull: false,
@@ -34,6 +31,6 @@ module.exports = {
 		});
 	},
 	down: async (queryInterface, Sequelize) => {
-		await queryInterface.dropTable('Reviews');
+		await queryInterface.dropTable('UserMediaWantToWatches');
 	}
 };

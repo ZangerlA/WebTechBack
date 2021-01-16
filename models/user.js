@@ -1,70 +1,69 @@
-const { v4: uuidv4 } = require('uuid');
+const {v4: uuidv4} = require('uuid');
 
 'use strict';
 const {
-  Model
+	Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class User extends Model {
+	class User extends Model {
 
-    static associate(models) {
-      this.hasMany(models.Review, {
-        foreignKey: {
-          type: DataTypes.UUID
-        }
-      });
-      models.Review.belongsTo(this)
+		static associate(models) {
+			this.hasMany(models.Review, {
+				foreignKey: {
+					type: DataTypes.UUID
+				}
+			});
+			models.Review.belongsTo(this);
+		}
+	};
 
-    }
-  };
+	User.init({
+		username: {
+			type: DataTypes.STRING,
+			unique: true,
+			allowNull: false,
+			validate: {
+				notEmpty: true,
+			},
+		},
+		contact_email: {
+			type: DataTypes.STRING,
+			unique: false,
+			allowNull: false,
+			validate: {
+				notEmpty: true,
+			},
+		},
+		pwHash: {
+			type: DataTypes.STRING,
+			unique: true,
+			allowNull: false,
+			validate: {
+				notEmpty: true,
+			},
+		},
+		refreshToken: {
+			type: DataTypes.STRING,
+			unique: true,
+			allowNull: true,
+		},
+		userDescription: {
+			type: DataTypes.TEXT,
+			unique: false,
+			allowNull: true,
+		},
+		profileImgUrl: {
+			type: DataTypes.STRING,
+			unique: false,
+			allowNull: true,
+		}
+	}, {
+		sequelize,
+		modelName: 'User',
+	});
+	User.beforeCreate((user, _) => {
+		return user.id = uuidv4();
+	})
 
-  User.init({
-    username: {
-      type: DataTypes.STRING,
-      unique: true,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
-    },
-    contact_email: {
-      type: DataTypes.STRING,
-      unique: false,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
-    },
-    pwHash: {
-      type: DataTypes.STRING,
-      unique: true,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
-    },
-    refreshToken: {
-      type: DataTypes.STRING,
-      unique: true,
-      allowNull: true,
-    },
-    userDescription: {
-      type: DataTypes.TEXT,
-      unique: false,
-      allowNull: true,
-    },
-    profileImgUrl: {
-      type: DataTypes.STRING,
-      unique: false,
-      allowNull: true,
-    }
-  }, {
-    sequelize,
-    modelName: 'User',
-  });
-  User.beforeCreate((user, _ ) => {
-    return user.id = uuidv4();
-  })
-
-  return User;
+	return User;
 };
