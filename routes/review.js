@@ -15,13 +15,20 @@ router.get('/:id', async function (req, res, next) {
 })
 
 router.post('/', async function (req, res, next) {
-	await db.Review.create({
-		reviewText: req.body.reviewText,
-		reviewPoints: req.body.reviewPoints,
-		MediumId: req.body.MediumId,
-		UserId: req.cookies.u_id
-	});
-	next();
+	try{
+		const user = await db.User.findByPk(req.cookies.u_id)
+		await db.Review.create({
+			reviewText: req.body.reviewText,
+			reviewPoints: req.body.reviewPoints,
+			MediumId: req.body.MediumId,
+			UserId: req.cookies.u_id,
+			Author: user.dataValues.username
+		});
+		next();
+	}catch (error) {
+		res.status(500).send({error: error, message: 'Error creating review.'});
+	}
+
 }, setNewMediaScore, addMediaToWatched)
 
 router.put('/:id', async function (req, res, next) {

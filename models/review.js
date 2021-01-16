@@ -28,6 +28,14 @@ module.exports = (sequelize, DataTypes) => {
 			validate: {
 				notEmpty: true,
 			}
+		},
+		Author: {
+			type: DataTypes.STRING,
+			unique: false,
+			allowNull: false,
+			validate: {
+				notEmpty: true,
+			}
 		}
 	}, {
 		sequelize,

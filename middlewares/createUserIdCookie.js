@@ -1,6 +1,6 @@
 function createUserIdCookie(res, id) {
-	let httpOnly = (process.env.HTTPONLY === 'true' ? true : false)
-	let secure = (process.env.SECURE === 'true' ? true : false)
+	let httpOnly = (process.env.COOKIE_HTTPONLY === 'true' ? true : false)
+	let secure = (process.env.COOKIE_SECURE === 'true' ? true : false)
 
 	res.cookie(
 		'u_id',

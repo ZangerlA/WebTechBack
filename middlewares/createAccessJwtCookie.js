@@ -10,11 +10,12 @@ function createAccessJwtCookie(res, id) {
 			expiresIn: '600s',
 			audience: 'http://teamkill.at/api'
 		});
-	let httpOnly = (process.env.HTTPONLY === 'true' ? true : false)
-	let secure = (process.env.SECURE === 'true' ? true : false)
+	let httpOnly = (process.env.COOKIE_HTTPONLY === 'true' ? true : false)
+	let secure = (process.env.COOKIE_SECURE === 'true' ? true : false)
 
 	console.log(httpOnly)
 	console.log(secure)
+
 	res.cookie(
 		'access_token',
 		access_token,
