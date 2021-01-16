@@ -55,7 +55,26 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.DOUBLE,
 			unique: false,
 			allowNull: true
+		},
+
+		genres: {
+			type: DataTypes.STRING,
+			unique: false,
+			allowNull: true
+		},
+
+		actors: {
+			type: DataTypes.STRING,
+			unique: false,
+			allowNull: true
+		},
+
+		premiered: {
+			type: DataTypes.STRING,
+			unique: false,
+			allowNull: true
 		}
+
 	}, {
 		sequelize,
 		modelName: 'Medium',

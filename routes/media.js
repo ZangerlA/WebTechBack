@@ -32,7 +32,10 @@ router.post('/', async function (req, res, next) {
 			mediaType: req.body.mediaType,
 			description: req.body.description,
 			imageUrl: req.body.imageUrl,
-			mediaScore: req.body.mediaScore
+			mediaScore: req.body.mediaScore,
+			genres: req.body.genres,
+			actors: req.body.actors,
+			premiered: req.body.premiered
 		});
 		res.status(200).send({message: 'Medium created.'});
 	} catch (error) {
