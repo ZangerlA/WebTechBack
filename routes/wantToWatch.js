@@ -2,28 +2,35 @@ const express = require('express');
 const router = express.Router();
 const db = require('../models');
 
-router.get('/:id?',async function (req, res, next){
+router.get('/',async function (req, res, next){
 	try{
-		let result;
-		if (req.params.id){
-			result = await db.UserMediaWantToWatch.findAll({
-				where: {
-					userId: req.params.id
-				}
-			})
+		let result = [];
+		let users = await db.User.findAll();
+		users = JSON.parse(JSON.stringify(users));
+		for (let user of users) {
+			let userWantToWatch = await db.UserMediaWantToWatch.findAll({where: {userId: user.id}})
+			userWantToWatch = JSON.parse(JSON.stringify(userWantToWatch));
+			userWantToWatch = userWantToWatch.map(result => result.mediumId);
+			let userWatchList = {[user.username]: userWantToWatch};
+			result.push(userWatchList)
 		}
-		else {
-			result = [];
-			let users = await db.User.findAll();
-			users = JSON.parse(JSON.stringify(users));
 
-			for (let user of users) {
-				let userWantToWatch = await db.UserMediaWantToWatch.findAll({where: {userId: user.id}})
-				userWantToWatch = JSON.parse(JSON.stringify(userWantToWatch));
-				userWantToWatch = userWantToWatch.map(result => result.mediumId);
-				let userWatchList = {[user.username]: userWantToWatch};
-				result.push(userWatchList)
-			}
+		res.status(200).send(result)
+	}catch (error) {
+		res.status(500).send({error: error, message: 'Error getting watchlist.'})
+	}
+});
+
+router.get('/currentUser',async function (req, res, next){
+	try{
+		let result = [];
+		let userWantToWatch = await db.UserMediaWantToWatch.findAll({
+				where: {
+					userId: req.cookies.u_id
+				}
+		});
+		for (let WTW of userWantToWatch) {
+			result.push(WTW.mediumId)
 		}
 		res.status(200).send(result)
 	}catch (error) {
