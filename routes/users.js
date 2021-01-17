@@ -6,6 +6,17 @@ const userExists = require('../middlewares/userExists');
 const checkUserId = require('../middlewares/checkUserId');
 
 //Route for retrieving data of user. Check username and pw, then return token, userinfo
+router.get('/', async function (req, res, next) {
+	try {
+		const user = await db.User.findByPk(req.cookies.u_id);
+		delete user.dataValues.pwHash;
+		delete user.dataValues.refreshToken;
+		res.status(200).send(user);
+	} catch (error) {
+		res.status(500).send({error: error.message, message: 'Error finding User by Id getting UserInfo.'});
+	}
+});
+
 router.get('/:id', async function (req, res, next) {
 	checkUserId(res, req, req.params.id)
 	let user;

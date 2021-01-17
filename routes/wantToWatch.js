@@ -10,6 +10,7 @@ router.get('/',async function (req, res, next){
 		for (let user of users) {
 			let userWantToWatch = await db.UserMediaWantToWatch.findAll({where: {userId: user.id}})
 			userWantToWatch = JSON.parse(JSON.stringify(userWantToWatch));
+			//userWantToWatch.forEach((res) => delete res.userId)
 			userWantToWatch = userWantToWatch.map(result => result.mediumId);
 			let userWatchList = {[user.username]: userWantToWatch};
 			result.push(userWatchList)
