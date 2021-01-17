@@ -4,11 +4,11 @@ const db = require('../models');
 const setNewMediaScore = require("../middlewares/setNewMediaScore");
 const addMediaToWatched = require("../middlewares/addMediaToWatched");
 
-router.get('/:mediumId?', async function (req, res, next) {
+router.get('/:MediumId?', async function (req, res, next) {
 	let reviews;
 	try {
-		if (req.query.mediumId) {
-			reviews = await db.Review.findAll({where: {MediumId: req.query.mediumId}})
+		if (req.query.MediumId) {
+			reviews = await db.Review.findAll({where: {MediumId: req.query.MediumId}})
 		} else {
 			reviews = await db.Review.findAll();
 		}
