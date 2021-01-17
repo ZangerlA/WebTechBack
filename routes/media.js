@@ -27,6 +27,11 @@ router.get('/:id', async function (req, res, next) {
 
 router.post('/', async function (req, res, next) {
 	try {
+		if(await db.Medium.findOne({where: {title: req.body.title}})) {
+			res.status(200).send({message: 'Medium already in database.'});
+			return;
+		}
+
 		await db.Medium.create({
 			title: req.body.title,
 			mediaType: req.body.mediaType,
