@@ -19,10 +19,10 @@ router.get('/', async function (req, res, next) {
 router.get('/:id', async function (req, res, next) {
 	try {
 		const medium = await db.Medium.findByPk(req.params.id);
+		res.status(200).send(medium);
 	} catch (error) {
 		res.status(500).send({error: error, message: 'Error retrieving media by id.'});
 	}
-	res.status(200).send(medium);
 })
 
 router.post('/', async function (req, res, next) {
