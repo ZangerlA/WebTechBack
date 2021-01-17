@@ -50,4 +50,18 @@ router.post('/',async function (req, res, next){
 	}
 });
 
+router.delete('/:mediumId', async function (req, res, next) {
+	try{
+		await db.UserMediaWantToWatch.destroy({
+			where: {
+				userId: req.cookies.u_id,
+				mediumId: req.params.mediumId
+			}
+		})
+		res.status(200).send({message: 'Success deleting from wantToWatch List.'})
+	}catch (error) {
+		res.status(500).send({error: error, message: 'Error Deleting from WantToWatch List.'})
+	}
+})
+
 module.exports = router;
