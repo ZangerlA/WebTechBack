@@ -58,8 +58,7 @@ router.post('/', userExists, async function (req, res, next) {
 })
 
 //Route for making changes to userdata
-router.put('/:id', userExists, async function (req, res, next) {
-	await checkUserId(res, req, req.params.id)
+router.put('/', userExists, async function (req, res, next) {
 	let fieldName = req.body.fieldName; //Set to the fieldname from db you want to change
 	let newInfo = req.body.newInfo;     //Set to the new value for the given db-field
 
@@ -73,15 +72,15 @@ router.put('/:id', userExists, async function (req, res, next) {
 			},
 			{
 				where: {
-					id: req.params.id
+					id: req.cookies.u_id
 				}
 			});
+		res.status(200).send({message: "Userdata edited"});
 	} catch (error) {
 		res.status(500).send({error: error.message, message: 'Error updating user while updating user.'});
-		return;
 	}
 
-	res.status(200).send({message: "Userdata edited"});
+
 })
 
 //Route for deleting a user
