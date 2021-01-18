@@ -61,8 +61,8 @@ router.post('/', userExists, async function (req, res, next) {
 router.put('/', userExists, async function (req, res, next) {
 	let fieldName = req.body.fieldName; //Set to the fieldname from db you want to change
 	let newInfo = req.body.newInfo;     //Set to the new value for the given db-field
-
 	if (newInfo === '') {
+		res.status(200).send({message: "Userdata edited"});
 		return;
 	}
 	if (fieldName === "pwHash") {
