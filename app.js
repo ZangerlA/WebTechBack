@@ -1,20 +1,21 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var authRouter = require('./routes/auth');
-var mediaRouter = require('./routes/media');
-var reviewRouter = require('./routes/review');
-var wantToWatchRouter = require('./routes/wantToWatch');
-var jwt_auth = require('express-jwt');
-var env = require('dotenv').config();
-var cors = require('cors')
-var checkAuth = require('./middlewares/checkAuth');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
+const authRouter = require('./routes/auth');
+const mediaRouter = require('./routes/media');
+const reviewRouter = require('./routes/review');
+const wantToWatchRouter = require('./routes/wantToWatch');
+const watchedRouter = require('./routes/watched');
+const jwt_auth = require('express-jwt');
+const env = require('dotenv').config();
+const cors = require('cors');
+const checkAuth = require('./middlewares/checkAuth');
 
-var app = express();
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -53,6 +54,7 @@ app.use('/auth', authRouter);
 app.use('/media', mediaRouter);
 app.use('/review', reviewRouter);
 app.use('/wantToWatch', wantToWatchRouter)
+app.use('/watched', watchedRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
