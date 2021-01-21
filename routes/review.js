@@ -26,6 +26,16 @@ router.get('/:id', async function (req, res, next) {
 router.post('/', async function (req, res, next) {
 	try{
 		const user = await db.User.findByPk(req.cookies.u_id)
+		const review = await db.Review.findOne({where: {MediumId: req.body.MediumId, UserId: req.cookies.u_id}});
+		if (review !== null){
+			await db.Review.destroy({
+				where: {
+					MediumId: req.body.MediumId,
+					UserId: req.cookies.u_id
+				}
+			});
+		}
+
 		await db.Review.create({
 			reviewText: req.body.reviewText,
 			reviewPoints: req.body.reviewPoints,
@@ -36,6 +46,7 @@ router.post('/', async function (req, res, next) {
 		next();
 	}catch (error) {
 		res.status(500).send({error: error, message: 'Error creating review.'});
+		return;
 	}
 
 }, setNewMediaScore, addMediaToWatched)
