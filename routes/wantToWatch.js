@@ -33,6 +33,7 @@ router.get('/currentUser',async function (req, res, next){
 		for (let WTW of userWantToWatch) {
 			result.push(WTW.mediumId)
 		}
+
 		res.status(200).send(result)
 	}catch (error) {
 		res.status(500).send({error: error, message: 'Error getting watchlist.'})
@@ -45,6 +46,7 @@ router.post('/',async function (req, res, next){
 			userId: req.cookies.u_id,
 			mediumId: req.body.MediumId
 		})
+
 		res.status(200).send({message: 'Success adding media to watchlist.'})
 	}catch (error) {
 		res.status(500).send({error: error, message: 'Error adding media to watchlist.'})
@@ -59,6 +61,7 @@ router.delete('/:mediumId', async function (req, res, next) {
 				mediumId: req.params.mediumId
 			}
 		})
+
 		res.status(200).send({message: 'Success deleting from wantToWatch List.'})
 	}catch (error) {
 		res.status(500).send({error: error, message: 'Error Deleting from WantToWatch List.'})

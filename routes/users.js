@@ -11,27 +11,26 @@ router.get('/', async function (req, res, next) {
 		const user = await db.User.findByPk(req.cookies.u_id);
 		delete user.dataValues.pwHash;
 		delete user.dataValues.refreshToken;
+
 		res.status(200).send(user);
 	} catch (error) {
 		res.status(500).send({error: error.message, message: 'Error finding User by Id getting UserInfo.'});
 	}
 });
 
-router.get('/:id', async function (req, res, next) {
-	checkUserId(res, req, req.params.id)
+router.get('/self', async function (req, res, next) {
 	let user;
 
 	try {
-		user = await db.User.findByPk(req.params.id);
+		user = await db.User.findByPk(req.cookies.u_id);
+		delete user.dataValues.pwHash;
+		delete user.dataValues.refreshToken;
+
+		res.status(200).send(user);
 	} catch (error) {
 		res.status(500).send({error: error.message, message: 'Error finding User by Id getting UserInfo.'});
 		return;
 	}
-
-	delete user.dataValues.pwHash;
-	delete user.dataValues.refreshToken;
-
-	res.status(200).send(user);
 });
 
 //Route for user creation.
@@ -49,12 +48,12 @@ router.post('/', userExists, async function (req, res, next) {
 			contact_email: req.body.contact_email,
 			pwHash: hash
 		});
+
+		res.status(200).send({message: "User created!"});
 	} catch (error) {
 		res.status(500).send({error: error.message, message: 'Error creating user while creating new user.'});
 		return;
 	}
-
-	res.status(200).send({message: "User created!"});
 })
 
 //Route for making changes to userdata
@@ -78,12 +77,11 @@ router.put('/', userExists, async function (req, res, next) {
 					id: req.cookies.u_id
 				}
 			});
+
 		res.status(200).send({message: "Userdata edited"});
 	} catch (error) {
 		res.status(500).send({error: error.message, message: 'Error updating user while updating user.'});
 	}
-
-
 })
 
 //Route for deleting a user
@@ -96,12 +94,11 @@ router.delete('/:id', async function (req, res, next) {
 				id: req.params.id
 			}
 		})
+
+		res.status(200).send({message: "User deleted"});
 	} catch (error) {
 		res.status(500).send({error: error.message, message: 'Error deleting user while delete user.'});
-		return;
 	}
-
-	res.status(200).send({message: "User deleted"});
 })
 
 module.exports = router;

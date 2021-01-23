@@ -10,15 +10,17 @@ router.get('/', async function (req, res, next) {
 		} else {
 			media = await db.Medium.findAll();
 		}
+
+		res.status(200).send(media);
 	} catch (error) {
 		res.status(500).send({error: error, message: 'Error retrieving bulk media.'});
 	}
-	res.status(200).send(media);
 })
 
 router.get('/:id', async function (req, res, next) {
 	try {
 		const medium = await db.Medium.findByPk(req.params.id);
+
 		res.status(200).send(medium);
 	} catch (error) {
 		res.status(500).send({error: error, message: 'Error retrieving media by id.'});
@@ -42,6 +44,7 @@ router.post('/', async function (req, res, next) {
 			actors: req.body.actors,
 			premiered: req.body.premiered
 		});
+
 		res.status(200).send({message: 'Medium created.'});
 	} catch (error) {
 		res.status(500).send({error: error, message: 'Error creating new media'});
@@ -61,10 +64,12 @@ router.put('/:id', async function (req, res, next) {
 					id: req.params.id
 				}
 			});
+
+		res.status(200).send({message: 'MediaData edited.'})
 	} catch (error) {
 		res.status(500).send({error: error, message: 'Error editing media'});
 	}
-	res.status(200).send({message: 'MediaData edited.'})
+
 })
 
 router.delete('/:id', async function (req, res, next) {
@@ -74,12 +79,11 @@ router.delete('/:id', async function (req, res, next) {
 				id: req.params.id
 			}
 		});
+
+		res.status(200).send({message: 'Media deleted.'})
 	} catch (error) {
-		console.log(error)
 		res.status(500).send({error: error, message: 'Error deleting media'});
-		return;
 	}
-	res.status(200).send({message: 'Media deleted.'})
 })
 
 module.exports = router;

@@ -13,6 +13,7 @@ router.post('/login', async function (req, res, next) {
 
 	try {
 		user = await db.User.findOne({where: {username: username}})
+
 	} catch (error) {
 		res.status(500).send({error: error.message, message: 'Error finding User while logging in.'});
 		return;
@@ -42,6 +43,7 @@ router.get('/logout', async function (req, res, next) {
 				id: req.cookies.u_id
 			}
 		});
+
 	} catch (error) {
 		res.status(500).send({error: error, message: 'Error deleting token while logging out.'});
 		return;

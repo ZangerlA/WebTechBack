@@ -4,7 +4,7 @@ const db = require('../models');
 const setNewMediaScore = require("../middlewares/setNewMediaScore");
 const addMediaToWatched = require("../middlewares/addMediaToWatched");
 
-router.get('/:MediumId?', async function (req, res, next) {
+router.get('/', async function (req, res, next) {
 	let reviews;
 	try {
 		if (req.query.MediumId) {
@@ -12,15 +12,22 @@ router.get('/:MediumId?', async function (req, res, next) {
 		} else {
 			reviews = await db.Review.findAll();
 		}
+
+		res.status(200).send(reviews);
 	} catch (error) {
 		res.status(500).send({error: error, message: 'Error retrieving bulk media.'});
 	}
-	res.status(200).send(reviews);
 })
 
 router.get('/:id', async function (req, res, next) {
-	const review = await db.Review.findByPk(req.params.id)
-	res.status(200).send(review);
+	try{
+		const review = await db.Review.findByPk(req.params.id)
+
+		res.status(200).send(review);
+	}catch (error){
+		res.status(500).send({error: error, message: 'Error retrieving media by id.'});
+	}
+
 })
 
 router.post('/', async function (req, res, next) {
@@ -44,6 +51,7 @@ router.post('/', async function (req, res, next) {
 			Author: user.dataValues.username
 		});
 		next();
+
 	}catch (error) {
 		res.status(500).send({error: error, message: 'Error creating review.'});
 		return;
@@ -54,24 +62,35 @@ router.post('/', async function (req, res, next) {
 router.put('/:id', async function (req, res, next) {
 	let fieldName = req.body.fieldName; //Set to the fieldname from db you want to change
 	let newInfo = req.body.newInfo;     //Set to the new value for the given db-field
-	await db.Review.update({
-			[fieldName]: newInfo    //Set db-field [fieldvalue] to content of newInfo
-		},
-		{
-			where: {
-				id: req.params.id
-			}
-		}).catch(error => res.status(500).send({message: error.message}));
-	res.status(200).send({message: 'ReviewData edited.'})
+	try{
+		await db.Review.update({
+				[fieldName]: newInfo    //Set db-field [fieldvalue] to content of newInfo
+			},
+			{
+				where: {
+					id: req.params.id
+				}
+			})
+
+		res.status(200).send({message: 'ReviewData edited.'})
+	} catch (error) {
+		res.status(500).send({error: error, message: 'Error editing review.'});
+	}
+
 })
 
 router.delete('/:id', async function (req, res, next) {
-	await db.Review.destroy({
-		where: {
-			id: req.params.id
-		}
-	})
-	res.status(200).send({message: "Review deleted"});
+	try{
+		await db.Review.destroy({
+			where: {
+				id: req.params.id
+			}
+		})
+
+		res.status(200).send({message: "Review deleted"});
+	}catch (error) {
+		res.status(500).send({error: error, message: 'Error deleting review.'});
+	}
 })
 
 module.exports = router;
