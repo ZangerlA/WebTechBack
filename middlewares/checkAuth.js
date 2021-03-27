@@ -32,6 +32,7 @@ function checkAuth(req, res, next) {
 				next();
 			} else {
 				res.status(500).send({message: 'Shit went wrong. Please try logging in again.'});
+				return;
 			}
 		})
 }
